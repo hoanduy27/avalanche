@@ -1,1 +1,1 @@
-python examples/ewc_mnist.py --scenario pmnist --ewc_mode separate --ewc_lambda 0.4 --lr 0.001 --hs 400 --hl 2 --epochs 20 --permutations 3 --cuda -1
+python examples/ewc_mnist.py --scenario pmnist --ewc_mode separate --ewc_lambda 0.4 --lr 0.001 --hs 400 --hl 2 --epochs 20 --permutations 3 --cuda -1 --logdir exp_log/ewc

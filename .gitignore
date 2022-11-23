@@ -12,3 +12,4 @@ doc_html/*
 tb_data/
 csvlogs/
 docs/generated/
+exp_log

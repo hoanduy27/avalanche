@@ -1,4 +1,5 @@
 import torch
+import os
 from os.path import expanduser
 import argparse
 from torchvision.datasets import MNIST
@@ -11,8 +12,9 @@ from avalanche.evaluation.metrics import (
     accuracy_metrics,
     loss_metrics,
     bwt_metrics,
+    forward_transfer_metrics
 )
-from avalanche.logging import InteractiveLogger, TensorboardLogger
+from avalanche.logging import InteractiveLogger, TensorboardLogger, CSVLogger, TextLogger
 from avalanche.training.plugins import EvaluationPlugin
 
 """
@@ -97,7 +99,9 @@ def main(args):
 
     # choose some metrics and evaluation method
     interactive_logger = InteractiveLogger()
-    tensorboard_logger = TensorboardLogger()
+    tensorboard_logger = TensorboardLogger(os.path.join(args.logdir, 'tb_data'))
+    csv_logger = CSVLogger(os.path.join(args.logdir, 'csvlogs'))
+
     eval_plugin = EvaluationPlugin(
         accuracy_metrics(
             minibatch=True, epoch=True, experience=True, stream=True
@@ -105,7 +109,8 @@ def main(args):
         loss_metrics(minibatch=True, epoch=True, experience=True, stream=True),
         forgetting_metrics(experience=True, stream=True),
         bwt_metrics(experience=True, stream=True),
-        loggers=[interactive_logger, tensorboard_logger],
+        # forward_transfer_metrics(experience=True, stream=True),
+        loggers=[interactive_logger, tensorboard_logger, csv_logger],
     )
 
     if args.ewc_mode == "separate":
@@ -122,6 +127,7 @@ def main(args):
         device=device,
         train_mb_size=args.minibatch_size,
         evaluator=eval_plugin,
+        eval_every=0
     )
 
     # train on the selected scenario with the chosen strategy
@@ -179,6 +185,7 @@ if __name__ == "__main__":
         default=5,
         help="Number of experiences in Permuted MNIST.",
     )
+    parser.add_argument("--logdir", type=str, default='exp_log')
     parser.add_argument(
         "--cuda",
         type=int,
