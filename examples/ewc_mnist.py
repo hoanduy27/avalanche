@@ -32,7 +32,7 @@ is above 90% but the average accuracy on previou tasks is around 20%.
 
 
 def main(args):
-    model = SimpleMLP(hidden_size=args.hs)
+    model = SimpleMLP(hidden_size=args.hs, hidden_layers=args.hl)
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr)
     criterion = torch.nn.CrossEntropyLoss()
 
@@ -166,6 +166,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("--lr", type=float, default=1e-3, help="Learning rate.")
     parser.add_argument("--hs", type=int, default=256, help="MLP hidden size.")
+    parser.add_argument("--hl", type=int, default=1, help="MLP hidden layers.")
     parser.add_argument(
         "--epochs", type=int, default=10, help="Number of training epochs."
     )
